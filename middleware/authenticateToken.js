@@ -1,8 +1,7 @@
 // middleware/authenticateToken.js
 
-const { JWT_SECRET } = require('../constants')
-
-const jwt = require('jsonwebtoken')
+import { JWT_SECRET } from '../constants/index.js'
+import jwt from 'jsonwebtoken'
 
 const authenticateToken = (req, res, next) => {
   const token = req.header('Authorization')
@@ -21,4 +20,4 @@ const authenticateToken = (req, res, next) => {
   })
 }
 
-module.exports = authenticateToken
+export default authenticateToken

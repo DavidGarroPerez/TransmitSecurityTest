@@ -29,9 +29,12 @@ const handleCallback = async (code) => {
       client_secret: clientSecret
     })
 
-    const { accessToken, idToken, refreshToken } = response.data
-    console.log('Tokens de autenticación:', accessToken, idToken, refreshToken)
+    const { access_token, id_token, refresh_token } = response.data
+    console.log('Tokens de autenticación:', access_token, id_token, refresh_token)
     // Guarda los tokens en almacenamiento local o en cookies según sea necesario
+    localStorage.setItem('access_token', access_token)
+    localStorage.setItem('id_token', id_token)
+    localStorage.setItem('refresh_token', refresh_token)
   } catch (error) {
     console.error('Error manejando el callback de autenticación:', error)
   }

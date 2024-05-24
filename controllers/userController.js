@@ -1,12 +1,12 @@
 // controllers/userController.js
 
-const { JWT_EXPIRES_IN, JWT_SECRET } = require('../constants')
-const { User } = require('../db')
-const jwt = require('jsonwebtoken') // jwt (jason web token) es una librería para generar tokens
-const bcrypt = require('bcrypt') // bcryot es una librería para encriptar contraseñas
+import { JWT_EXPIRES_IN, JWT_SECRET } from '../constants/index.js'
+import { User } from '../db/index.js'
+import jwt from 'jsonwebtoken' // jwt (json web token) es una librería para generar tokens
+import bcrypt from 'bcrypt' // bcrypt es una librería para encriptar contraseñas
 
 // Controladores para operaciones de usuarios
-const getAllUsers = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     const users = await User.findAll()
     res.json(users)
@@ -16,7 +16,7 @@ const getAllUsers = async (req, res) => {
   }
 }
 
-const getUserById = async (req, res) => {
+export const getUserById = async (req, res) => {
   const userId = req.params.id
 
   try {
@@ -31,8 +31,9 @@ const getUserById = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener usuario.' })
   }
 }
+
 // createUser es un controlador asíncrono que recibe los datos del usuario desde el cuerpo de la petición (req.body) y los guarda en la base de datos usando el método create de Sequelize. Si la operación es exitosa, se responde con el usuario creado y un código de estado 201 (creado). Si ocurre un error, se responde con un código de estado 500 (error interno del servidor) y un mensaje de error.
-const createUser = async (req, res) => {
+export const createUser = async (req, res) => {
   const { firstName, lastName, dateBirth, address, password, mobilePhone, email } = req.body
 
   try {
@@ -43,7 +44,7 @@ const createUser = async (req, res) => {
       address,
       password: bcrypt.hashSync(password, 12),
       mobile_phone: mobilePhone,
-      email
+      email,
     })
 
     res.status(201).json(newUser)
@@ -53,7 +54,7 @@ const createUser = async (req, res) => {
   }
 }
 
-const updateUser = async (req, res) => {
+export const updateUser = async (req, res) => {
   const userId = req.params.id
   const { firstName, lastName, dateBirth, address, password, mobilePhone, email } = req.body
 
@@ -67,7 +68,7 @@ const updateUser = async (req, res) => {
         address,
         password,
         mobile_phone: mobilePhone,
-        email
+        email,
       })
       res.json(user)
     } else {
@@ -79,7 +80,7 @@ const updateUser = async (req, res) => {
   }
 }
 
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   const userId = req.params.id
 
   try {
@@ -96,7 +97,7 @@ const deleteUser = async (req, res) => {
   }
 }
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
   const { mobilePhone, password } = req.body
 
   try {
@@ -108,11 +109,11 @@ const login = async (req, res) => {
         user: {
           id: user.id,
           first_name: user.first_name,
-          last_name: user.last_name
+          last_name: user.last_name,
           // ... otros campos necesarios
         },
         access_token: accessToken,
-        token_type: 'bearer'
+        token_type: 'bearer',
       })
     } else {
       res.status(401).json({ error: 'Usuario o contraseña incorrectos.' })
@@ -127,18 +128,9 @@ const generateAccessToken = (user) => {
   return jwt.sign(
     {
       mobile_phone: user.mobile_phone,
-      email: user.email
+      email: user.email,
     },
     JWT_SECRET, // Ajusta la firma del token según se necesite
     { expiresIn: JWT_EXPIRES_IN } // Ajusta la duración del token según se necesite
   )
-}
-
-module.exports = {
-  getAllUsers,
-  getUserById,
-  createUser,
-  updateUser,
-  deleteUser,
-  login
 }

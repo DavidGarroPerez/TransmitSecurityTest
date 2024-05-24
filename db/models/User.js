@@ -1,8 +1,8 @@
 // db/models/User.js
 
-const { DataTypes } = require('sequelize')
+import { DataTypes } from 'sequelize'
 
-module.exports = function (sequelize) {
+const defineUser = (sequelize) => {
   const User = sequelize.define('User', {
     id: {
       type: DataTypes.INTEGER,
@@ -28,7 +28,6 @@ module.exports = function (sequelize) {
     },
     token: {
       type: DataTypes.STRING
-    // allowNull: por defecto es true
     },
     password: {
       type: DataTypes.STRING(120),
@@ -40,11 +39,15 @@ module.exports = function (sequelize) {
     },
     email: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     }
   }, {
-  // Otras opciones del modelo (si es necesario)
-
+    tableName: 'users', // nombre de la tabla
+    timestamps: true // crea automáticamente las columnas createdAt y updatedAt
   })
+
   return User
 }
+
+export default defineUser
